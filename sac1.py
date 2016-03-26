@@ -142,8 +142,9 @@ def phase2(g,alpha,commus):
 		temp = ([nd for nd in nodes if nd not in pickedNodes])
 		#print 'temp',len(temp)
 		node = random.choice(temp)
+		#print 'node',len(node)
 		highest = float("-inf")
-		print 'commus',len(commus)
+		#print 'commus',len(commus)
 		for index,commu in enumerate(commus, start=0):	
 			Q1 = newman(g,node,commu)
 			Q2 = attr(g,node,commu)/(len(commus)*len(commus))
@@ -152,17 +153,12 @@ def phase2(g,alpha,commus):
 				highest = gain
 				highIndex = index	
 				highCommu = commu	
-		print commus.index(node)
+		#print commus.index(node)
 		if highest > 0:
 			tempnode = node
-			print 'before',commus.index(highCommu)
 			commus.remove(node)
-			print 'after',commus.index(highCommu)
-
 			commus[highIndex-1] = commus[highIndex-1] + tempnode
-
-			#commus.remove(node)
-			print 'gain',highest
+			#print 'gain',highest
 			repeatNum = 0
 			pickedNodes = []
 			count+=1
@@ -171,15 +167,32 @@ def phase2(g,alpha,commus):
 			pickedNodes.append(node)
 			if count!= 0:
 				repeatNum += 1
-		#nodes = [c for c in commus if len(c)==1]
-		print 'nodes',len(nodes)
+		#print 'nodes',len(nodes)
 	return commus
+
+def summarize(commus):
+	print 'here'
+	try:
+		file = open('communities.txt','a')
+		content = ''
+		for commu in commus:
+			temp = '\n'
+			for node in commu:
+				#print node.index
+				temp = temp+str(node.index)+','
+			content += temp
+		file.write(content[1:])
+		#file.write("\n")
+		file.close()
+	except:
+		print "Unexpected error:", sys.exc_info()[0]
+		sys.exit(0)
 
 def main():
 	start = timeit.default_timer()
 
 	g = draw()
-	alpha = 1
+	alpha = 0.5
 	interation = 15
 
 	
@@ -188,7 +201,7 @@ def main():
 	commus1 = phase1(g,alpha,interation)
 	commus2 = phase2(g,alpha,commus1)
 	#print len(commus)
-	print len(commus2)
+	#print len(commus2)
 	nu = len(commus2)
 	for item in commus2:
 		if len(item)!=1:
@@ -197,7 +210,8 @@ def main():
 			#for node in item:
 				#print node.index
 			nu -= 1
-	print nu
+	#print nu
+	summarize(commus2)
 
 
 if __name__ == "__main__":
