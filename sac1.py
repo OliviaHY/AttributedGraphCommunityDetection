@@ -80,22 +80,15 @@ def newman(graph,vertices,commu):
 
 def phase1(g,alpha,interation):
 	commus = [[g.vs[i]] for i in range(0,g.vcount())]
-	
-	#print commus[0]
-	#print commus[1]
-	#print len(commus)
 	count = 0
 	nodes = commus
 	repeatNum = 0
-	#print len(nodes)
 	afterNodeNum = len(nodes)
 	pickedNodes = []
 	while (len(nodes) != 0 and repeatNum<len(nodes) and count <interation):
 		temp = ([nd for nd in nodes if nd not in pickedNodes])
-		#print 'temp',len(temp)
 		node = random.choice(temp)
 		highest = float("-inf")
-		#print 'commus',len(commus)
 		for index,commu in enumerate(commus, start=0):	
 			Q1 = newman(g,node,commu)
 			Q2 = attr(g,node,commu)/(len(commus)*len(commus))
@@ -104,17 +97,10 @@ def phase1(g,alpha,interation):
 				highest = gain
 				highIndex = index	
 				highCommu = commu	
-		#print commus.index(node)
 		if highest > 0:
 			tempnode = node
-			#print 'before',commus.index(highCommu)
 			commus.remove(node)
-			#print 'after',commus.index(highCommu)
-
 			commus[highIndex-1] = commus[highIndex-1] + tempnode
-
-			#commus.remove(node)
-			#print 'gain',highest
 			repeatNum = 0
 			pickedNodes = []
 			count+=1
@@ -124,27 +110,19 @@ def phase1(g,alpha,interation):
 			if count!= 0:
 				repeatNum += 1
 		nodes = [c for c in commus if len(c)==1]
-		#print 'nodes',len(nodes)
 	return commus
 
 def phase2(g,alpha,commus):	
-	#print commus[0]
-	#print commus[1]
-	#print len(commus)
 	count = 0
 	nodes = commus
 	repeatNum = 0
-	#print len(nodes)
 	afterNodeNum = len(nodes)
 	pickedNodes = []
 	interation = 15
 	while (len(nodes) != 0 and repeatNum<len(nodes) and count <interation):
 		temp = ([nd for nd in nodes if nd not in pickedNodes])
-		#print 'temp',len(temp)
 		node = random.choice(temp)
-		#print 'node',len(node)
 		highest = float("-inf")
-		#print 'commus',len(commus)
 		for index,commu in enumerate(commus, start=0):	
 			Q1 = newman(g,node,commu)
 			Q2 = attr(g,node,commu)/(len(commus)*len(commus))
@@ -153,12 +131,10 @@ def phase2(g,alpha,commus):
 				highest = gain
 				highIndex = index	
 				highCommu = commu	
-		#print commus.index(node)
 		if highest > 0:
 			tempnode = node
 			commus.remove(node)
 			commus[highIndex-1] = commus[highIndex-1] + tempnode
-			#print 'gain',highest
 			repeatNum = 0
 			pickedNodes = []
 			count+=1
@@ -167,7 +143,6 @@ def phase2(g,alpha,commus):
 			pickedNodes.append(node)
 			if count!= 0:
 				repeatNum += 1
-		#print 'nodes',len(nodes)
 	return commus
 
 def summarize(commus):
@@ -178,11 +153,9 @@ def summarize(commus):
 		for commu in commus:
 			temp = '\n'
 			for node in commu:
-				#print node.index
 				temp = temp+str(node.index)+','
 			content += temp
 		file.write(content[1:])
-		#file.write("\n")
 		file.close()
 	except:
 		print "Unexpected error:", sys.exc_info()[0]
@@ -195,22 +168,14 @@ def main():
 	alpha = 0.5
 	interation = 15
 
-	
-	#stop = timeit.default_timer()
-	#print stop - start 
 	commus1 = phase1(g,alpha,interation)
 	commus2 = phase2(g,alpha,commus1)
-	#print len(commus)
-	#print len(commus2)
-	nu = len(commus2)
-	for item in commus2:
-		if len(item)!=1:
-			nu += len(item)
-			print 'len',len(item)
-			#for node in item:
-				#print node.index
-			nu -= 1
-	#print nu
+	# nu = len(commus2)
+	# for item in commus2:
+	# 	if len(item)!=1:
+	# 		nu += len(item)
+	# 		print 'len',len(item)
+	# 		nu -= 1
 	summarize(commus2)
 
 
